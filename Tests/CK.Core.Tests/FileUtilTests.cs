@@ -30,13 +30,30 @@ public class FileUtilTests
         FileUtil.NormalizePathSeparator( "", true ).Should().Be( "" );
         FileUtil.NormalizePathSeparator( "", false ).Should().Be( "" );
 
-        FileUtil.NormalizePathSeparator( @"/\C", false ).Should().Be( ToPlatform( @"\\C" ) );
-        FileUtil.NormalizePathSeparator( @"/\C/", true ).Should().Be( ToPlatform( @"\\C\" ) );
-        FileUtil.NormalizePathSeparator( @"/\C\", true ).Should().Be( ToPlatform( @"\\C\" ) );
-        FileUtil.NormalizePathSeparator( @"/\C", true ).Should().Be( ToPlatform( @"\\C\" ) );
+        if( Path.DirectorySeparatorChar == '\\' )
+        {
+            FileUtil.NormalizePathSeparator( @"/\C", false ).Should().Be( ToPlatform( @"\\C" ) );
+            FileUtil.NormalizePathSeparator( @"/\C/", true ).Should().Be( ToPlatform( @"\\C\" ) );
+            FileUtil.NormalizePathSeparator( @"/\C\", true ).Should().Be( ToPlatform( @"\\C\" ) );
+            FileUtil.NormalizePathSeparator( @"/\C", true ).Should().Be( ToPlatform( @"\\C\" ) );
 
-        FileUtil.NormalizePathSeparator( @"/", false ).Should().Be( ToPlatform( @"\" ) );
-        FileUtil.NormalizePathSeparator( @"/a", true ).Should().Be( ToPlatform( @"\a\" ) );
+            FileUtil.NormalizePathSeparator( @"/", false ).Should().Be( ToPlatform( @"\" ) );
+            FileUtil.NormalizePathSeparator( @"/a", true ).Should().Be( ToPlatform( @"\a\" ) );
+        }
+        else if( Path.DirectorySeparatorChar == '/' )
+        {
+            FileUtil.NormalizePathSeparator( @"/\C", false ).Should().Be( ToPlatform( @"//C" ) );
+            FileUtil.NormalizePathSeparator( @"/\C/", true ).Should().Be( ToPlatform( @"//C/" ) );
+            FileUtil.NormalizePathSeparator( @"/\C\", true ).Should().Be( ToPlatform( @"//C/" ) );
+            FileUtil.NormalizePathSeparator( @"/\C", true ).Should().Be( ToPlatform( @"//C/" ) );
+
+            FileUtil.NormalizePathSeparator( @"/", false ).Should().Be( ToPlatform( @"/" ) );
+            FileUtil.NormalizePathSeparator( @"/a", true ).Should().Be( ToPlatform( @"/a/" ) );
+        }
+        else
+        {
+            Throw.NotSupportedException( $"Path.DirectorySeparatorChar = '{Path.DirectorySeparatorChar}'." );
+        }
     }
 
     [Test]
@@ -214,7 +231,7 @@ public class FileUtilTests
 
         CleanupDir( copyDir.FullName );
 
-        DirectoryInfo recursiveDir = Directory.CreateDirectory( testDir.FullName + @"\recDir" );
+        DirectoryInfo recursiveDir = Directory.CreateDirectory( Path.Combine( testDir.FullName, "recDir" ) );
         CreateFiles( recursiveDir.FullName, "REC.png" );
         CreateHiddenFiles( recursiveDir.FullName, "hiddenREC.gif" );
 
@@ -317,13 +334,17 @@ public class FileUtilTests
         FileUtil.IndexOfInvalidFileNameChars( "a" ).Should().Be( -1 );
         FileUtil.IndexOfInvalidFileNameChars( "ab" ).Should().Be( -1 );
         FileUtil.IndexOfInvalidFileNameChars( "abcde" ).Should().Be( -1 );
-        FileUtil.IndexOfInvalidFileNameChars( "a<" ).Should().Be( 1 );
-        FileUtil.IndexOfInvalidFileNameChars( "a:" ).Should().Be( 1 );
-        FileUtil.IndexOfInvalidFileNameChars( "ab<" ).Should().Be( 2 );
-        FileUtil.IndexOfInvalidFileNameChars( "<a" ).Should().Be( 0 );
-        FileUtil.IndexOfInvalidFileNameChars( "abc>" ).Should().Be( 3 );
-        FileUtil.IndexOfInvalidFileNameChars( "abc|" ).Should().Be( 3 );
-        FileUtil.IndexOfInvalidFileNameChars( "abc\"" ).Should().Be( 3 );
+
+        if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+        {
+            FileUtil.IndexOfInvalidFileNameChars( "a<" ).Should().Be( 1 );
+            FileUtil.IndexOfInvalidFileNameChars( "a:" ).Should().Be( 1 );
+            FileUtil.IndexOfInvalidFileNameChars( "ab<" ).Should().Be( 2 );
+            FileUtil.IndexOfInvalidFileNameChars( "<a" ).Should().Be( 0 );
+            FileUtil.IndexOfInvalidFileNameChars( "abc>" ).Should().Be( 3 );
+            FileUtil.IndexOfInvalidFileNameChars( "abc|" ).Should().Be( 3 );
+            FileUtil.IndexOfInvalidFileNameChars( "abc\"" ).Should().Be( 3 );
+        }
     }
 
     [Test]
@@ -333,12 +354,16 @@ public class FileUtilTests
         FileUtil.IndexOfInvalidPathChars( "a" ).Should().Be( -1 );
         FileUtil.IndexOfInvalidPathChars( "ab" ).Should().Be( -1 );
         FileUtil.IndexOfInvalidPathChars( "abcde" ).Should().Be( -1 );
-        FileUtil.IndexOfInvalidPathChars( "a|" ).Should().Be( 1 );
-        FileUtil.IndexOfInvalidPathChars( "ab|" ).Should().Be( 2 );
-        FileUtil.IndexOfInvalidPathChars( "|a" ).Should().Be( 0 );
-        FileUtil.IndexOfInvalidPathChars( "abc|" ).Should().Be( 3 );
-        FileUtil.IndexOfInvalidPathChars( "abc|" ).Should().Be( 3 );
         FileUtil.IndexOfInvalidPathChars( "abc\0-" ).Should().Be( 3 );
+
+        if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+        {
+            FileUtil.IndexOfInvalidPathChars( "a|" ).Should().Be( 1 );
+            FileUtil.IndexOfInvalidPathChars( "ab|" ).Should().Be( 2 );
+            FileUtil.IndexOfInvalidPathChars( "|a" ).Should().Be( 0 );
+            FileUtil.IndexOfInvalidPathChars( "abc|" ).Should().Be( 3 );
+            FileUtil.IndexOfInvalidPathChars( "abc|" ).Should().Be( 3 );
+        }
     }
 
     private void AssertContains( string pathDir, string[] result, params string[] values )

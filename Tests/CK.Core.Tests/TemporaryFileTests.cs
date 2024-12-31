@@ -1,6 +1,7 @@
 using FluentAssertions;
 using System.IO;
 using NUnit.Framework;
+using System;
 
 namespace CK.Core.Tests;
 
@@ -15,7 +16,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
 
@@ -23,7 +27,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {   
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
 
@@ -31,7 +38,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
     }
@@ -44,7 +54,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
     }
@@ -57,7 +70,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
 
@@ -66,7 +82,10 @@ public class TemporaryFileTests
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
             path.EndsWith( ".tmp." ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
 
@@ -75,7 +94,10 @@ public class TemporaryFileTests
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
             path.EndsWith( ".tmp.tst" ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
 
@@ -84,7 +106,10 @@ public class TemporaryFileTests
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
             path.EndsWith( ".tmp.tst" ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
         }
         File.Exists( path ).Should().BeFalse();
     }
@@ -97,7 +122,10 @@ public class TemporaryFileTests
         {
             path = temporaryFile.Path;
             File.Exists( temporaryFile.Path ).Should().BeTrue();
-            (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            if( Environment.OSVersion.Platform == PlatformID.Win32NT )
+            {
+                (File.GetAttributes( temporaryFile.Path ) & FileAttributes.Temporary).Should().Be( FileAttributes.Temporary );
+            }
             temporaryFile.Detach();
         }
         File.Exists( path ).Should().BeTrue();
